@@ -51,7 +51,7 @@ let isSuika = false;
 
 // 과일을 추가해주는 함수
 function addFruit() {
-  const index = 7;
+  const index = Math.floor(Math.random * 5);
   const fruit = FRUITS[index];
 
   const body = Bodies.circle(300, 50, fruit.radius, {
@@ -126,6 +126,20 @@ window.onkeyup = (event) => {
   }
 }
 
+function resetWorld() {
+  World.clear(world);
+
+
+  World.add(world, [leftWall, rightWall, ground, topLine]);
+
+  currentBody = null;
+  currentFruit = null;
+  disableAction = false;
+  isSuika = false;
+
+  addFruit();
+}
+
 Events.on(engine, "collisionStart", (event) => {
   event.pairs.forEach((collision) => {
     if (collision.bodyA.index === collision.bodyB.index){
@@ -153,23 +167,33 @@ Events.on(engine, "collisionStart", (event) => {
 
       World.add(world, newBody)
 
-      if (newFruit.name === "10_watermelon") {
-        isSuika = true;
-      }
+      setTimeout(() => {
+        if (newBody.index === 10) {
+          isSuika = true;
+        }
+      }, 500)
+
     }
 
-    if (isSuika){
-      isSuika = false;
-      setTimeout(() => {
-        alert("수박을 완성했어요!");
-      }, 500)
+    if ( isSuika ) {
+      const userConfirmed = confirm("수박을 완성했어요! 이제 일하세요!");
+
+      if (userConfirmed) {
+        resetWorld();
+      }
     }
 
     if (
       !disableAction &&
-      (collision.bodyA.name === "topLine" || collision.bodyB.name === "topLine")) {
-      alert("게임 오버ㅜㅜ 다시 하려면 새로고침 해주세요.");
+      (collision.bodyA.name === "topLine" || collision.bodyB.name === "topLine")
+    ) {
+      const userConfirmed = confirm("게임 오버ㅜㅜ 다시 하려면 확인 버튼을 누르세요.");
+
+      if (userConfirmed) {
+        resetWorld();
+      }
     }
+
   })
 })
 

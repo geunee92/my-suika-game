@@ -1,4 +1,4 @@
-import { Engine, Render, Runner, World, Bodies, Body} from "matter-js";
+import { Engine, Render, Runner, World, Bodies, Body, Events, Collision} from "matter-js";
 import { FRUITS } from "./fruits";
 
 const engine = Engine.create();
@@ -74,13 +74,15 @@ window.onkeydown = (event) => {
   }
   switch (event.code) {
     case "KeyA":
+      if (currentBody.position.x - currentFruit.radius > 30)
       Body.setPosition(currentBody, {
         x: currentBody.position.x - 10,
         y: currentBody.position.y,
       })
       break;
-   
+   d
     case "KeyD":
+      if (currentBody.position.x - currentFruit.radius < 590)
       Body.setPosition(currentBody, {
         x: currentBody.position.x + 10,
         y: currentBody.position.y,
@@ -99,5 +101,35 @@ window.onkeydown = (event) => {
       break;
   }
 }
+
+Events.on(engine, "collisionStart", (event) => {
+  event.pairs.forEach((collision) => {
+    if (collision.bodyA.index === collision.bodyB.index){
+      const index = collision.bodyA.index;
+
+      if (index === FRUITS.length -1) {
+        return;
+      }
+
+      World.remove(world, [collision.bodyA, collision.bodyB]);
+
+      const newFruit = FRUITS[index + 1];
+      
+      const newBody = Bodies.circle(
+        collision.collision.supports[0].x,
+        collision.collision.supports[0].y,
+        newFruit.radius,
+        {
+          render: {
+            sprite: { texture: `${newFruit.name}.png` }
+          },
+          index: index + 1,
+        }
+      );
+
+      World.add(world, newBody)
+    }
+  })
+})
 
 addFruit();

@@ -47,10 +47,11 @@ let currentFruit = null;
 // 과일을 내리고 있는 동안 액션을 막아주는 변수값
 let disableAction = false;
 let interval = null;
+let isSuika = false;
 
 // 과일을 추가해주는 함수
 function addFruit() {
-  const index = Math.floor(Math.random() * 5);
+  const index = 9
   const fruit = FRUITS[index];
 
   const body = Bodies.circle(300, 50, fruit.radius, {
@@ -151,12 +152,23 @@ Events.on(engine, "collisionStart", (event) => {
       );
 
       World.add(world, newBody)
+
+      if (newFruit.name === "10_watermelon") {
+        isSuika = true;
+      }
+    }
+
+    if (isSuika){
+      isSuika = false;
+      setTimeout(() => {
+        alert("수박을 완성했어요!");
+      }, 500)
     }
 
     if (
       !disableAction &&
       (collision.bodyA.name === "topLine" || collision.bodyB.name === "topLine")) {
-      alert("Game over");
+      alert("게임 오버ㅜㅜ");
     }
   })
 })

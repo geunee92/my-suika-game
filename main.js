@@ -168,7 +168,7 @@ Events.on(engine, "collisionStart", (event) => {
     if (
       !disableAction &&
       (collision.bodyA.name === "topLine" || collision.bodyB.name === "topLine")) {
-      alert("게임 오버ㅜㅜ");
+      alert("게임 오버ㅜㅜ 다시 하려면 새로고침 해주세요.");
     }
   })
 })

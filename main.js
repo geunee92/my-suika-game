@@ -51,7 +51,7 @@ let isSuika = false;
 
 // 과일을 추가해주는 함수
 function addFruit() {
-  const index = Math.floor(Math.random() * 5);
+  const index = 7;
   const fruit = FRUITS[index];
 
   const body = Bodies.circle(300, 50, fruit.radius, {

@@ -15,6 +15,10 @@ const render = Render.create({
 
 const world = engine.world;
 
+const topLineText = document.createElement("div");
+topLineText.innerText = "게임 방법 A: 좌로 이동, D: 우로 이동, S: 떨어뜨리기";
+document.body.appendChild(topLineText);
+
 const leftWall = Bodies.rectangle(15, 395, 30, 790, {
   isStatic: true,
   render: { fillStyle: "#E6B143"}

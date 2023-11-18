@@ -9,7 +9,7 @@ const render = Render.create({
     wireframes: false,
     background: "#F7F4C8",
     width: 620,
-    height: 850
+    height: 850,
   }
 });
 
@@ -46,6 +46,7 @@ let currentBody = null;
 let currentFruit = null;
 // 과일을 내리고 있는 동안 액션을 막아주는 변수값
 let disableAction = false;
+let interval = null;
 
 // 과일을 추가해주는 함수
 function addFruit() {
@@ -65,6 +66,7 @@ function addFruit() {
 
   currentBody = body;
   currentFruit = fruit;
+
   World.add(world, body)
 }
 
@@ -75,19 +77,30 @@ window.onkeydown = (event) => {
   }
   switch (event.code) {
     case "KeyA":
-      if (currentBody.position.x - currentFruit.radius > 30)
-      Body.setPosition(currentBody, {
-        x: currentBody.position.x - 10,
-        y: currentBody.position.y,
-      })
-      break;
-   d
+      if (interval)
+        return;
+
+      interval = setInterval(() => {
+        if (currentBody.position.x - currentFruit.radius > 30)
+        Body.setPosition(currentBody, {
+          x: currentBody.position.x - 1,
+          y: currentBody.position.y,
+        })
+      }, 5);
+      break; 
+   
+      
     case "KeyD":
-      if (currentBody.position.x - currentFruit.radius < 590)
+      if (interval)
+      return;
+
+    interval = setInterval(() => {
+      if (currentBody.position.x + currentFruit.radius < 590)
       Body.setPosition(currentBody, {
-        x: currentBody.position.x + 10,
+        x: currentBody.position.x + 1,
         y: currentBody.position.y,
-      })
+      });
+      }, 5);
       break;
 
     case "KeyS":
@@ -100,6 +113,15 @@ window.onkeydown = (event) => {
       }, 1000)
 
       break;
+  }
+}
+
+window.onkeyup = (event) => {
+  switch (event.code) {
+    case "KeyA":
+    case "KeyD":
+      clearInterval(interval);
+      interval = null
   }
 }
 

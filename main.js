@@ -1,4 +1,4 @@
-import { Engine, Render, Runner, World, Bodies} from "matter-js";
+import { Engine, Render, Runner, World, Bodies, Body} from "matter-js";
 import { FRUITS } from "./fruits";
 
 const engine = Engine.create();
@@ -43,14 +43,19 @@ Runner.run(engine);
 
 let currentBody = null;
 let currentFruit = null;
+// 과일을 내리고 있는 동안 액션을 막아주는 변수값
+let disableAction = false;
 
+// 과일을 추가해주는 함수
 function addFruit() {
   const index = Math.floor(Math.random() * 5);
   const fruit = FRUITS[index];
 
   const body = Bodies.circle(300, 50, fruit.radius, {
     index: index,
+    // 바로 떨어지지 않고 위에 있게 해준다.
     isSleeping: true,
+    // 이미지를 보여주게 해준다.
     render: {
       sprite: { texture: `${fruit.name}.png` }
     },
@@ -60,6 +65,39 @@ function addFruit() {
   currentBody = body;
   currentFruit = fruit;
   World.add(world, body)
+}
+
+// 자바스크립트 키보드 인식 내장 메소드로 키 추가
+window.onkeydown = (event) => {
+  if (disableAction) {
+    return;
+  }
+  switch (event.code) {
+    case "KeyA":
+      Body.setPosition(currentBody, {
+        x: currentBody.position.x - 10,
+        y: currentBody.position.y,
+      })
+      break;
+   
+    case "KeyD":
+      Body.setPosition(currentBody, {
+        x: currentBody.position.x + 10,
+        y: currentBody.position.y,
+      })
+      break;
+
+    case "KeyS":
+      currentBody.isSleeping = false;
+      disableAction = true;
+
+      setTimeout(() => {
+        addFruit();
+        disableAction = false;
+      }, 1000)
+
+      break;
+  }
 }
 
 addFruit();
